@@ -1,0 +1,24 @@
+{
+  "name": "emedia/helpers",
+  "description": "Laravel 5 Helper functions and static classes",
+  "type": "project",
+  "require": {
+    "php": ">=5.5.9",
+    "illuminate/support": "5.0.x|5.1.x"
+  },
+  "license": "Proprietary",
+  "authors": [
+    {
+      "name": "Shane Perera",
+      "email": "shane@shaneperera.com"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "EMedia/Helpers/src/helpers.php"
+    ],
+    "psr-4": {
+      "EMedia\\Helpers\\": "src/"
+    }
+  }
+}
