@@ -15,7 +15,7 @@
   ],
   "autoload": {
     "files": [
-      "EMedia/Helpers/src/helpers.php"
+      "src/helpers.php"
     ],
     "psr-4": {
       "EMedia\\Helpers\\": "src/"
