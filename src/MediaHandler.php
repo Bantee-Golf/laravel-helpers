@@ -1,6 +1,6 @@
 <?php
 
-namespace ElegantMedia\Helpers;
+namespace EMedia\Helpers;
 
 use Exception;
 use Illuminate\Support\Facades\Input;

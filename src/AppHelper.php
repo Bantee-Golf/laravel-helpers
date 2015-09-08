@@ -1,6 +1,6 @@
 <?php
 
-namespace ElegantMedia\Helpers;
+namespace EMedia\Helpers;
 
 class AppHelper
 {
