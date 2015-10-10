@@ -10,9 +10,19 @@ use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 class MediaHandler
 {
 
-	public static function uploadFile($fieldName = false, $fileDirPath = false, $fileDir = false)
+	/**
+	 * Upload a file from laravel input and return the saved filename
+	 * If a relativeDir is given, it will return the relative path.
+	 * Otherwise returns the absolute path
+	 *
+	 * @param bool $fieldName 			Field name of HTTP input
+	 * @param bool $absoluteFileDirPath Absolute storage path
+	 * @param bool $relativeFileDir		Relative storage path
+	 * @return bool|string
+	 */
+	public static function uploadFile($fieldName = false, $absoluteFileDirPath = false, $relativeFileDir = false)
 	{
-		if (!$fieldName && !$fileDirPath && !$fileDir) return false;
+		if (!$fieldName && !$absoluteFileDirPath) return false;
 
 		// handle images
 		if (Input::hasFile($fieldName))
@@ -20,10 +30,17 @@ class MediaHandler
 			$file = Input::file($fieldName);
 
 			// \Debug::dump($file->getClientOriginalName()); exit;
-			$newFileName = self::getUniqueFileName($fileDirPath, $file->getClientOriginalName());
-			$file->move($fileDirPath, $newFileName);
+			$newFileName = self::getUniqueFileName($absoluteFileDirPath, $file->getClientOriginalName());
+			$file->move($absoluteFileDirPath, $newFileName);
 
-			return $fileDir . $newFileName;
+			if (!empty($relativeFileDir))
+			{
+				return $relativeFileDir . $newFileName;
+			}
+			else
+			{
+				return $absoluteFileDirPath . $newFileName;
+			}
 		}
 		return false;
 	}
