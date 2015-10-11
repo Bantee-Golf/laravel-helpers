@@ -24,6 +24,10 @@ class MediaHandler
 	{
 		if (!$fieldName && !$absoluteFileDirPath) return false;
 
+		// add the last dir separator if it's missing
+		$absoluteFileDirPath = rtrim($absoluteFileDirPath, '/') . '/';
+		if ($relativeFileDir) $relativeFileDir = rtrim($relativeFileDir, '/') . '/';
+
 		// handle images
 		if (Input::hasFile($fieldName))
 		{
