@@ -19,3 +19,18 @@ if (!function_exists('reverse_snake_case'))
 		return $string;
 	}
 }
+
+if (!function_exists('random_unambiguous'))
+{
+	/**
+	 * Generate a random string without any ambiguous characters
+	 * @param int $length
+	 * @return string
+	 */
+	function random_unambiguous($length = 16)
+	{
+		$pool = '23456789abcdefghkmnpqrstuvwxyz';
+
+		return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
+	}
+}

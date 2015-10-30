@@ -27,14 +27,7 @@ class AppHelper
 		if (empty($url)) return false;
 		return 'https://href.li/?'	. $url;
 	}
-
-
-	public static function unambiguousRandom($length = 16)
-	{
-		$pool = '23456789abcdefghkmnpqrstuvwxyz';
-
-		return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
-	}
+	
 
 	public static function arrayKeysByRegex($pattern, $array)
 	{
