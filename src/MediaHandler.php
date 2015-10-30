@@ -161,6 +161,10 @@ class MediaHandler
 			});
 			$image->save($newImagePath);
 		}
+		else
+		{
+			$image->save($newImagePath);
+		}
 
 		return true;
 	}
