@@ -34,3 +34,42 @@ if (!function_exists('random_unambiguous'))
 		return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
 	}
 }
+
+if (!function_exists('replace_array_key'))
+{
+
+	/**
+	 * Replace an existing key of an array with a new one
+	 * Can be done recursively
+	 * 
+	 * @param array $array
+	 * @param $existingKey
+	 * @param $newKey
+	 * @param bool|false $recursive
+	 * @return array
+	 */
+	function replace_array_key($array = [], $existingKey, $newKey, $recursive = false)
+	{
+		$allArrayData = [];
+		foreach ($array as $item)
+		{
+			$arrayData = $item;
+			if (array_key_exists($existingKey, $arrayData)) {
+				$arrayData[$newKey] = $arrayData[$existingKey];
+				unset($arrayData[$existingKey]);
+			}
+
+			// do this recursively
+			if ($recursive)
+			{
+				if (isset($arrayData[$newKey]) && count($arrayData[$newKey]))
+				{
+					$arrayData[$newKey] = replace_array_key($arrayData[$newKey], $existingKey, $newKey, true);
+				}
+			}
+
+			$allArrayData[] = $arrayData;
+		}
+		return $allArrayData;
+	}
+}
