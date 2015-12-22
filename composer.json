@@ -4,7 +4,7 @@
   "type": "project",
   "require": {
     "php": ">=5.5.9",
-    "illuminate/support": "5.0.x|5.1.x"
+    "illuminate/support": "5.0.x|5.1.x|5.2.x"
   },
   "license": "Proprietary",
   "authors": [
@@ -16,7 +16,8 @@
   "autoload": {
     "files": [
       "src/helpers.php",
-      "src/file_helpers.php"
+      "src/file_helpers.php",
+      "src/language_helpers.php"
     ],
     "psr-4": {
       "EMedia\\Helpers\\": "src/"
