@@ -149,3 +149,26 @@ if (!function_exists('array_keys_camel_case'))
 		array_keys_replace($mixed, 'camel_case', $recursive);
 	}
 }
+
+
+if (!function_exists('resource_path'))
+{
+	/**
+	 * Guess the primary resource path from a given URL.
+	 * turns /something/12/edit -> /something/12
+	 *
+	 * @param $url
+	 *
+	 * @return string
+	 */
+	function resource_path($url)
+	{
+		$elements = explode('/', $url);
+		if (end($elements) === 'edit') {
+			array_pop($elements);
+			return implode('/', $elements);
+		}
+		return $url;
+	}
+}
+
