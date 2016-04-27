@@ -117,4 +117,29 @@ class TimeHelper
         return date("Y_m_d_His", $time[1]) . '.' . substr((string)$time[0], 2, 5);
     }
 
+    /**
+     *
+     * Convert a UTC time-string to the applications timezone.
+     * Useful to convert JavaScript date strings to Carbon dates.
+     *
+     * @param $UTCTimeString
+     *
+     * @return Carbon
+     */
+    public static function toServerTimezone($UTCTimeString, $onlyDate = false)
+    {
+        // convert the UTC date sent by client to our format
+        $reportDate = new \Carbon\Carbon($UTCTimeString);
+        $reportDate->setTimezone(config('app.timezone', 'UTC'));
+        if ($onlyDate) $reportDate->startOfDay();
+        return $reportDate;
+    }
+
+    public static function toUTCTimezone($serverTimeString)
+    {
+        $serverTime = new \Carbon\Carbon($serverTimeString);
+        $serverTime->setTimezone('UTC');
+        return $serverTime;
+    }
+
 }

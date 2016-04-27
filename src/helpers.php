@@ -151,7 +151,7 @@ if (!function_exists('array_keys_camel_case'))
 }
 
 
-if (!function_exists('resource_path'))
+if (!function_exists('entity_resource_path'))
 {
 	/**
 	 * Guess the primary resource path from a given URL.
@@ -161,8 +161,11 @@ if (!function_exists('resource_path'))
 	 *
 	 * @return string
 	 */
-	function resource_path($url)
+	function entity_resource_path($url = '')
 	{
+		// if the URL is not given, get the current URL
+		if ($url === '') $url = request()->url();
+
 		$elements = explode('/', $url);
 		if (end($elements) === 'edit') {
 			array_pop($elements);

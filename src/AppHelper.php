@@ -77,26 +77,23 @@ class AppHelper
 		if (array_key_exists($currentKey, $array))
 		{
 			$nonReplacingValues		= array_except($array, $currentKey);
-//			$replacingValues 		= array_only  ($array, $currentKey);
-
-//			if (is_array($replacingValues))
-//			{
-//				$replacedData = [];
-//				foreach ($replacingData as $replacingField)
-//				{
-//
-//				}
-//			}
-//			$replacingValueData = [];
-//			foreach($replacingValues as $value)
-//			{
-//				$replacingValueData[] = $value;
-//			}
 
 			$nonReplacingValues[$replaceKey] = $array[$currentKey];
 			return $nonReplacingValues;
 		}
 		return $array;
 	}
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Routing
+	|--------------------------------------------------------------------------
+	|
+	| Routing and URL helpers
+	|
+	*/
+
+
 
 }
