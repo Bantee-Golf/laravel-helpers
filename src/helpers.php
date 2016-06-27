@@ -156,6 +156,8 @@ if (!function_exists('entity_resource_path'))
 	/**
 	 * Guess the primary resource path from a given URL.
 	 * turns /something/12/edit -> /something/12
+	 * turns /something/create -> /something
+	 * turns /something/new -> /something
 	 *
 	 * @param $url
 	 *
@@ -167,7 +169,8 @@ if (!function_exists('entity_resource_path'))
 		if ($url === '') $url = request()->url();
 
 		$elements = explode('/', $url);
-		if (end($elements) === 'edit') {
+		$lastElement = end($elements);
+		if (in_array($lastElement, ['edit', 'create', 'new'])) {
 			array_pop($elements);
 			return implode('/', $elements);
 		}
