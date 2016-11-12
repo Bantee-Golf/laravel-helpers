@@ -178,3 +178,20 @@ if (!function_exists('entity_resource_path'))
 	}
 }
 
+if (!function_exists('implode_not_empty'))
+{
+	/**
+	 *
+	 * Implode but don't include empty values
+	 *
+	 * @param $glue
+	 * @param $pieces
+	 *
+	 * @return string
+	 */
+	function implode_not_empty($glue, $pieces)
+	{
+		$pieces = array_filter($pieces);	// remove empty names
+		return implode($glue, $pieces);
+	}
+}
