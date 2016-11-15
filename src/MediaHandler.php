@@ -3,6 +3,8 @@
 namespace EMedia\Helpers;
 
 use Exception;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
