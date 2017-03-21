@@ -1,7 +1,12 @@
 <?php
 
-if (!function_exists('mkdir_if_not_exists'))
+
+namespace EMedia\Helpers\Files;
+
+
+class FileManager
 {
+
 	/**
 	 * Create a directory if it doesn't exist
 	 *
@@ -9,10 +14,11 @@ if (!function_exists('mkdir_if_not_exists'))
 	 * @param int $permissions
 	 * @param bool $recursive
 	 */
-	function mkdir_if_not_exists($dirPath, $permissions = 0777, $recursive = true)
+	public static function mkdir_if_not_exists($dirPath, $permissions = 0777, $recursive = true)
 	{
 		if ( !is_dir($dirPath) ) {
 			mkdir($dirPath, $permissions, $recursive);
 		}
 	}
+
 }

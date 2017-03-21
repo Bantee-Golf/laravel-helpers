@@ -1,30 +1,30 @@
 ## Laravel Helper functions
 
+Supports Laravel 5.4
 
-### Migration Helpers
+### Installation Instructions
 
-Use `PublishesPackageMigrations` trait in a service provider to add migration file publishing support.
-
-eg:
+Add the repository to `composer.json`
 ```
-	use PublishesPackageMigrations;
-
-	public function boot()
+"repositories": [
 	{
-		$this->publishMigrations();
+	    "type":"vcs",
+	    "url":"git@bitbucket.org:elegantmedia/laravel-helpers.git"
 	}
+]
+```
 
-	public function publishMigrations()
-	{
-		// the migration files should be the snake_case versions of the classes
-		// eg. CreateOrdersTables => create_orders_tables.php
-		$migrationClassMap = [
-			'CreateOrdersTables',
-			'AddColumnsToOrdersTables',
-		];
+```
+composer require emedia/helpers
+```
 
-		$migrationsDirPath = __DIR__ . '/../migrations/';
-        $this->publishPackageMigrations($migrationsDirPath, $migrationClassMap);
-	}
 
+## Database
+
+If you want to clear the database, add this to your local service provider's `register` method.
+
+```
+if (!app()->environment('production')) {
+	$this->commands(RefreshDatabaseCommand::class);
+}
 ```

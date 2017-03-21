@@ -1,7 +1,7 @@
 <?php
-namespace EMedia\Helpers\Support;
+namespace EMedia\Helpers\Console\Commands\Traits;
 
-use EMedia\Helpers\TimeHelper;
+use EMedia\Helpers\DateTime\Timing;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 trait PublishesPackageMigrations
@@ -18,7 +18,7 @@ trait PublishesPackageMigrations
 			// if the migration exists, don't do anything
 			if (class_exists($migrationClass)) continue;
 
-			$timestamp = TimeHelper::getMicroTimestamp();
+			$timestamp = Timing::microTimestamp();
 			$publishingOriginalFile = snake_case($migrationClass). '.php';
 			$stubPath = $migrationsDirectoryPath . $publishingOriginalFile;
 

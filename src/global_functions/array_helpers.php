@@ -1,39 +1,5 @@
 <?php
 
-// Set of common helper functions
-
-
-
-if (!function_exists('reverse_snake_case'))
-{
-	/**
-	 * Convert an 'existing_snake_case' to 'exsting snake case'
-	 *
-	 * @param $string
-	 * @return string
-	 */
-	function reverse_snake_case($string)
-	{
-		$string = str_replace('_', ' ', $string);
-
-		return $string;
-	}
-}
-
-if (!function_exists('random_unambiguous'))
-{
-	/**
-	 * Generate a random string without any ambiguous characters
-	 * @param int $length
-	 * @return string
-	 */
-	function random_unambiguous($length = 16)
-	{
-		$pool = '23456789abcdefghkmnpqrstuvwxyz';
-
-		return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
-	}
-}
 
 if (!function_exists('replace_array_key'))
 {
@@ -150,31 +116,41 @@ if (!function_exists('array_keys_camel_case'))
 	}
 }
 
-
-if (!function_exists('entity_resource_path'))
-{
+if (!function_exists('array_key_by')) {
 	/**
-	 * Guess the primary resource path from a given URL.
-	 * turns /something/12/edit -> /something/12
-	 * turns /something/create -> /something
-	 * turns /something/new -> /something
 	 *
-	 * @param $url
+	 * Get an array and key it by a given key
+	 * eg:
+	 * [
+	 *        [ 'name' => 'john', 'age' => 45 ],
+	 *        [ 'name' => 'jane', 'age', => 32 ],
+	 * ]
 	 *
-	 * @return string
+	 * becomes
+	 * [
+	 *        'john' => [ 'age' => 45 ],
+	 *        'jane' => [ 'age' => 32 ],
+	 * ]
+	 *
+	 *
+	 * @param $array
+	 * @param $keyBy
+	 *
+	 * @return array
 	 */
-	function entity_resource_path($url = '')
+	function array_key_by($array, $keyBy)
 	{
-		// if the URL is not given, get the current URL
-		if ($url === '') $url = request()->url();
+		$newValues = [];
 
-		$elements = explode('/', $url);
-		$lastElement = end($elements);
-		if (in_array($lastElement, ['edit', 'create', 'new'])) {
-			array_pop($elements);
-			return implode('/', $elements);
+		foreach ($array as $key => $value) {
+			if (is_array($value)) {
+				if (isset($value[$keyBy]) && $value[$keyBy] != '') {
+					$newValues[$value[$keyBy]][] = $value;
+				}
+			}
 		}
-		return $url;
+
+		return $newValues;
 	}
 }
 

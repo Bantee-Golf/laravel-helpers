@@ -3,8 +3,8 @@
   "description": "Laravel 5 Helper functions and static classes",
   "type": "project",
   "require": {
-    "php": ">=5.5.9",
-    "illuminate/support": "5.0.x|5.1.x|5.2.x|5.3.x"
+    "php": ">=5.6.4",
+    "illuminate/support": "5.4.*"
   },
   "license": "Proprietary",
   "authors": [
@@ -15,9 +15,10 @@
   ],
   "autoload": {
     "files": [
-      "src/helpers.php",
-      "src/file_helpers.php",
-      "src/language_helpers.php"
+      "src/global_functions/array_helpers.php",
+      "src/global_functions/package_helpers.php",
+      "src/global_functions/string_helpers.php",
+      "src/global_functions/url_helpers.php"
     ],
     "psr-4": {
       "EMedia\\Helpers\\": "src/"
