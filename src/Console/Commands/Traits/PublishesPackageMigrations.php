@@ -1,7 +1,7 @@
 <?php
 namespace EMedia\Helpers\Console\Commands\Traits;
 
-use EMedia\Helpers\DateTime\Timing;
+use EMedia\PHPHelpers\DateTime\Timing;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 trait PublishesPackageMigrations

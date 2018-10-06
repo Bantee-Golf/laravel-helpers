@@ -4,14 +4,19 @@
 namespace EMedia\Helpers\Console\Commands\Traits;
 
 
-use EMedia\Helpers\DateTime\Timing;
+use EMedia\PHPHelpers\DateTime\Timing;
 use Illuminate\Support\Facades\File;
+use EMedia\PHPHelpers\Files\Loader;
 
 trait CopiesStubFiles
 {
 
 	protected function copyMigrationFile($dirRoot, $stubFileName, $className)
 	{
+		// because Laravel 5.7 doesn't auto-load migration classes, manually load them
+		$migrationsPath = database_path('migrations');
+		Loader::includeAllFilesFromDir($migrationsPath);
+
 		$source = $dirRoot . '/../../../database/migrations/' . $stubFileName;
 		if (!file_exists($source)) {
 			$this->error("Unable to find the file {$source}");
@@ -22,7 +27,7 @@ trait CopiesStubFiles
 
 		preg_match('/[\d]{1,4}_(.*)/', $pathinfo['basename'], $matches);
 		if (count($matches) < 1) {
-			$this->error("Unable to parse the filename {$source}");
+			$this->error("Unable to parse the filename {$source}. Please ");
 			return;
 		}
 
@@ -46,7 +51,7 @@ trait CopiesStubFiles
 
 	protected function copyFile($source, $destination, $className = null)
 	{
-		if ($className && class_exists($className)) {
+		if ($className && class_exists($className, false)) {
 			$this->info("{$className} class already exists. Skipped...");
 			return false;
 		}
