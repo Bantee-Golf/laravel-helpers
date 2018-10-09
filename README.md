@@ -53,3 +53,21 @@ TimeConverters::toServerTimezone($UTCTimeString, $onlyDate = false)
 // Guess the primary resource path from a given URL.
 entity_resource_path($url = '')
 ```
+
+#### Email
+
+Email to webmaster with a simple text message.
+
+Set the variables in `.env` file
+```
+WEBMASTER_EMAIL="webmaster@example.com"
+OR
+WEBMASTER_EMAIL="webmaster@example.com|sysadmin@example.com"
+
+(Optional)
+WEBMATER_REPLY_TO="reply@example.com
+```
+
+```
+Webmaster::sendEmail($message, $subject = 'SYSTEM MESSAGE')
+```
