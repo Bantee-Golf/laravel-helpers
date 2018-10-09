@@ -40,21 +40,21 @@ php artisan db:refresh --noseed
 php artisan composer:dump-autoload
 ```
 
-#### Conversions
+### Conversions
 
 ```
 // Convert a UTC timestring to existing server's timezone
 TimeConverters::toServerTimezone($UTCTimeString, $onlyDate = false)
 ```
 
-#### Resources
+### Resources
 
 ```
 // Guess the primary resource path from a given URL.
 entity_resource_path($url = '')
 ```
 
-#### Email
+### Email
 
 Email to webmaster with a simple text message.
 
@@ -70,4 +70,17 @@ WEBMATER_REPLY_TO="reply@example.com
 
 ```
 Webmaster::sendEmail($message, $subject = 'SYSTEM MESSAGE')
+```
+
+### Database
+
+Create unique database tokens for a given column. Use this trait in an Eloquent model.
+
+```
+use \EMedia\Helpers\Database\CreatesUniqueTokens;
+```
+Then call the function
+
+```
+self::newUniqueToken('confirmation_token')
 ```
