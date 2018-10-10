@@ -38,9 +38,19 @@ class MenuBar
 	 */
 	public static function menuItems($parent = 'default')
 	{
-		return self::$menubarItems[$parent]->sortBy(function ($item) {
-			return $item->getOrder();
-		});
+		if (empty(self::$menubarItems[$parent])) return [];
+
+		// sort by order first
+		$itemsWithOrder = self::$menubarItems[$parent]->filter(function ($item) {
+			return $item->getOrder() > 0;
+		})->sort();
+
+		// sort by text then
+		$itemsWithoutOrder = self::$menubarItems[$parent]->filter(function ($item) {
+			return empty($item->getOrder());
+		})->sort();
+
+		return $itemsWithOrder->merge($itemsWithoutOrder);
 	}
 
 }
