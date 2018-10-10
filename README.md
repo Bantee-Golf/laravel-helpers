@@ -84,3 +84,29 @@ Then call the function
 ```
 self::newUniqueToken('confirmation_token')
 ```
+
+### Components
+
+#### Menu
+
+Build a Menu from various packages, by injecting menu items.
+
+```
+$m = (new \EMedia\Helpers\Components\Menu\MenuItem())->setText('Users')
+						  ->setResource('manage.users.index')
+						  ->setOrder(2)
+						  ->setClass('fas fa-users');
+
+// instead of setResource(), you and send a url with setUrl()
+
+\EMedia\Helpers\Components\Menu\MenuBar::add($m);
+OR
+\EMedia\Helpers\Components\Menu\MenuBar::add($m, 'second-menu');
+```
+
+Getting the items back
+```
+\EMedia\Helpers\Components\Menu\MenuBar::menuItems();
+OR
+\EMedia\Helpers\Components\Menu\MenuBar::menuItems('second-menu');
+```
