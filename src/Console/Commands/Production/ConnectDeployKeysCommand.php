@@ -50,15 +50,23 @@ class ConnectDeployKeysCommand extends Command
 			return;
 		}
 
+		$appName = config('app.name');
+		if ($appName === 'Laravel' || empty($appName)) {
+			$this->error('Set the app name in your .env file first. Aborting...');
+			return;
+		}
+
+		$label = snake_case($appName) . '_' . php_uname("n");
+
 		$this->info('Adding keys requires a BitBucket account with admin access to repositories.');
 		$username = $this->ask('Your Bitbucket Username');
 		$password = $this->secret('Your Bitbucket Password');
-		$label = $this->ask('Enter a label for the key', snake_case(config('app.name')));
+		$label = $this->ask('Enter a label for the key', $label);
 
-		check_all_present($username, $password, $label);
+		check_all_present($username, $password, $label, $publicKey);
 
 		foreach ($json->repositories as $repository) {
-			if ($repository->type !== 'vcs') {
+			if (strtolower($repository->type) !== 'vcs') {
 				$this->info("Skipping non VCS URL `{$repository->url}`");
 				continue;
 			}
