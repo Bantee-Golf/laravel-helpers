@@ -40,6 +40,14 @@ php artisan db:refresh --noseed
 php artisan composer:dump-autoload
 ```
 
+#### Distribute Bitbucket Deploy SSH Keys
+
+For a server to access private repositories you need to assign the SSH PUBLIC Keys. Run the command below and follow the prompts. You'll need Bitbucket username, password and the public key.
+
+```
+php artisan setup:production:connect-deploy-keys
+```
+
 ### Conversions
 
 ```
