@@ -56,12 +56,23 @@ class ConnectDeployKeysCommand extends Command
 			return;
 		}
 
+		if (strpos($publicKey, 'PRIVATE') !== false) {
+			$this->error('Seems like you have entered a PRIVATE key. Do not distribute PRIVATE KEYS!!!. Aborting...');
+			return;
+		}
+
 		$label = snake_case($appName) . '_' . php_uname("n");
+
+		$label = $this->ask('Enter a label for the key', $label);
+		if (!$this->confirm("Add all keys with a label `{$label}`?", false)) {
+			$this->error('Aborting...');
+			return;
+		}
 
 		$this->info('Adding keys requires a BitBucket account with admin access to repositories.');
 		$username = $this->ask('Your Bitbucket Username');
 		$password = $this->secret('Your Bitbucket Password');
-		$label = $this->ask('Enter a label for the key', $label);
+
 
 		check_all_present($username, $password, $label, $publicKey);
 
