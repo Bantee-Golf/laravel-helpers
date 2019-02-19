@@ -20,12 +20,24 @@ abstract class BasePackageSetupCommand extends Command
 
 	public function handle()
 	{
-		// $this->setPackageName();
-
 		$this->checkSetupVariables();
 
+		if (method_exists($this, 'beforeMigrations')) {
+			$this->beforeMigrations();
+		}
+
 		$this->generateMigrations();
+
+		if (method_exists($this, 'beforeSeeds')) {
+			$this->beforeSeeds();
+		}
+
 		$this->generateSeeds();
+
+		if (method_exists($this, 'publishPackageFiles')) {
+			$this->publishPackageFiles();
+		}
+
 		if ($this->updateRoutesFile) $this->updateRouteFiles();
 
 		$this->dumpAutoload();
