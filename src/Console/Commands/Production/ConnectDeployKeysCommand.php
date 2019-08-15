@@ -1,6 +1,5 @@
 <?php
 
-
 namespace EMedia\Helpers\Console\Commands\Production;
 
 
@@ -10,15 +9,13 @@ class ConnectDeployKeysCommand extends Command
 {
 	/**
 	 * The name and signature of the console command.
-	 *
 	 * @var string
 	 */
-	protected $signature = 'setup:production:connect-deploy-keys 
+	protected $signature = 'setup:production:connect-deploy-keys
 								{--public-key-path : Your public key to be used}';
 
 	/**
 	 * The console command description.
-	 *
 	 * @var string
 	 */
 	protected $description = 'Add SSH public key to Bitbucket private repositories.';
@@ -69,12 +66,18 @@ class ConnectDeployKeysCommand extends Command
 			return;
 		}
 
-		$this->info('Adding keys requires a BitBucket account with admin access to repositories.');
-		$username = $this->ask('Your Bitbucket Username');
-		$password = $this->secret('Your Bitbucket Password');
+		$this->info('Adding keys requires a BitBucket app consumer.');
+		$clientKey = $this->ask('Enter Client Key');
+		$clientSecret = $this->secret('Enter Client Secret');
 
+		check_all_present($clientKey, $clientSecret, $label, $publicKey);
 
-		check_all_present($username, $password, $label, $publicKey);
+		$accessToken = $this->getAccessToken($clientKey, $clientSecret);
+
+		if ($accessToken == null) {
+			$this->error('Could not retrieve access token. Aborting...');
+			return;
+		}
 
 		foreach ($json->repositories as $repository) {
 			if (strtolower($repository->type) !== 'vcs') {
@@ -82,39 +85,95 @@ class ConnectDeployKeysCommand extends Command
 				continue;
 			}
 
-			$sections = explode(':', $repository->url);
-			if (count($sections) === 2) {
-				$slug = substr($sections[1], 0, strrpos($sections[1], '.'));
-				$this->info('Adding key to: ' . $slug);
-				$ch = curl_init('https://api.bitbucket.org/1.0/repositories/' . $slug . '/deploy-keys');
-				curl_setopt($ch, CURLOPT_POST, TRUE);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				curl_setopt($ch, CURLOPT_USERPWD, $username . ':' . $password);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, [
-					'label' => $label,
-					'key' => $publicKey,
-				]);
-
-				$response = json_decode(curl_exec($ch));
-				$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-				if ($code < 200 || $code >= 300) {
-					if (isset($response->key) && count($response->key)) {
-						foreach ($response->key as $info) {
-							if(isset($info->message)) {
-								$this->info($info->message);
-							}
-						}
-					} else {
-						print_r($response);
-					}
-				} else {
-					$this->info('Key successfully added to: ' . $slug);
-				}
-
-				curl_close($ch);
-			}
+			$this->addKey($repository->url, $label, $publicKey, $accessToken);
 		}
 	}
 
+	protected function getAccessToken($clientKey, $clientSecret)
+	{
+		$accessToken = null;
+
+		// https://developer.atlassian.com/bitbucket/api/2/reference/meta/authentication#oauth-2
+		// curl -X POST -u "CLIENT-KEY:CLIENT-SECRET" https://bitbucket.org/site/oauth2/access_token -d grant_type=client_credentials
+
+		$ch = curl_init('https://bitbucket.org/site/oauth2/access_token?grant_type=client_credentials');
+		curl_setopt($ch, CURLOPT_POST, TRUE);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_USERPWD, $clientKey . ':' . $clientSecret);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, [
+			'grant_type' => 'client_credentials',
+		]);
+
+		// RESPONSE FORMAT: {"access_token": "ACCESS-TOKEN", "scopes": "repository:write repository:admin", "expires_in": 7200, "refresh_token": "E72FJL69JLxgnCXSDE", "token_type": "bearer"}
+		$response = json_decode(curl_exec($ch));
+		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		if ($code < 200 || $code >= 300) {
+			$this->error("Could not receive an access token for given client key and client secret.");
+			print_r($response);
+		} else {
+			if (isset($response->access_token, $response->scopes) && strpos($response->scopes, 'repository:admin') > -1) {
+				$accessToken = $response->access_token;
+			} else {
+				print_r($response);
+			}
+		}
+
+		curl_close($ch);
+
+		return $accessToken;
+	}
+
+	protected function addKey($repository, $label, $key, $accessToken)
+	{
+		$sections = explode(':', $repository);
+		if (count($sections) === 2) {
+			$slug = substr($sections[1], 0, strrpos($sections[1], '.'));
+			$this->info('Adding key to: ' . $slug);
+
+			// https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Busername%7D/%7Brepo_slug%7D/deploy-keys#post
+			/*
+				curl -XPOST \
+				-H "Authorization: Bearer ACCESS-TOKEN" \
+				-H "Content-type: application/json" \
+				https://api.bitbucket.org/2.0/repositories/USER/REPOSITORY/deploy-keys -d \
+				'{
+				    "key": "ssh-rsa AAAAB3NzaC1yc2EAA...Bdq5 user@domain",
+				    "label": "site.com"
+				}'
+			*/
+
+			$ch = curl_init('https://api.bitbucket.org/2.0/repositories/' . $slug . '/deploy-keys');
+			$headers = [
+				'Content-Type: application/json',
+				'Authorization: Bearer ' . $accessToken,
+			];
+			curl_setopt($ch, CURLOPT_POST, TRUE);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+				'key' => $key,
+				'label' => $label,
+			]));
+
+			$response = json_decode(curl_exec($ch));
+			$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+			if ($code < 200 || $code >= 300) {
+				if (isset($response->key) && count($response->key)) {
+					foreach ($response->key as $info) {
+						if(isset($info->message)) {
+							$this->info($info->message);
+						}
+					}
+				} else {
+					print_r($response);
+				}
+			} else {
+				$this->info('Key successfully added to: ' . $slug);
+			}
+
+			curl_close($ch);
+		}
+	}
 }
