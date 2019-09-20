@@ -1,6 +1,8 @@
 ## Laravel Helper functions
 
-Supports Laravel 5.7
+Supports Laravel 6
+
+Use 2.0.x for Laravel 5.7 - 5.8
 
 ### Installation Instructions
 
