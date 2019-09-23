@@ -30,7 +30,7 @@ trait CreatesUniqueTokens
 		$iMax = 10;
 
 		for ($i = 0; $i < $iMax; $i++) {
-			$randomToken = time() . str_random($length);
+			$randomToken = time() . \Illuminate\Support\Str::random($length);
 			$existing = self::where($dbFieldName, $randomToken)->first();
 			if (!$existing) return $randomToken;
 		}
