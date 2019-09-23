@@ -19,7 +19,7 @@ trait PublishesPackageMigrations
 			if (class_exists($migrationClass)) continue;
 
 			$timestamp = Timing::microTimestamp();
-			$publishingOriginalFile = snake_case($migrationClass). '.php';
+			$publishingOriginalFile = \Illuminate\Support\Str::snake($migrationClass). '.php';
 			$stubPath = $migrationsDirectoryPath . $publishingOriginalFile;
 
 			if (!file_exists($stubPath))
