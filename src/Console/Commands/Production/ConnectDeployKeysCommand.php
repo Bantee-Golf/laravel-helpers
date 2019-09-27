@@ -58,7 +58,7 @@ class ConnectDeployKeysCommand extends Command
 			return;
 		}
 
-		$label = snake_case($appName) . '_' . php_uname("n");
+		$label = \Illuminate\Support\Str::snake($appName) . '_' . php_uname("n");
 
 		$label = $this->ask('Enter a label for the key', $label);
 		if (!$this->confirm("Add all keys with a label `{$label}`?", false)) {
