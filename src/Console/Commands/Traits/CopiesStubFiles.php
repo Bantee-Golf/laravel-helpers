@@ -26,7 +26,7 @@ trait CopiesStubFiles
 		$pathinfo = pathinfo($source);
 
 		preg_match('/[\d]{1,4}_(.*)/', $pathinfo['basename'], $matches);
-		if (count($matches) < 1) {
+		if (!is_countable($matches) || count($matches) < 1) {
 			$this->error("Unable to parse the filename {$source}. Please ");
 			return;
 		}

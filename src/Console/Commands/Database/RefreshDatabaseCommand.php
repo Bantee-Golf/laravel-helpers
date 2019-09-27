@@ -76,7 +76,7 @@ class RefreshDatabaseCommand extends Command
 
 		$tables = DB::select('SHOW TABLES');
 
-		if (!count($tables)) {
+		if (!is_countable($tables) || !count($tables)) {
 			$this->info("Database `$db` is already clear.");
 			return;
 		}

@@ -127,7 +127,7 @@ class ConnectDeployKeysCommand extends Command
 	protected function addKey($repository, $label, $key, $accessToken)
 	{
 		$sections = explode(':', $repository);
-		if (count($sections) === 2) {
+		if (is_countable($sections) && count($sections) === 2) {
 			$slug = substr($sections[1], 0, strrpos($sections[1], '.'));
 			$this->info('Adding key to: ' . $slug);
 
@@ -160,7 +160,7 @@ class ConnectDeployKeysCommand extends Command
 			$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 			if ($code < 200 || $code >= 300) {
-				if (isset($response->key) && count($response->key)) {
+				if (isset($response->key) && is_countable($response->key) && count($response->key)) {
 					foreach ($response->key as $info) {
 						if(isset($info->message)) {
 							$this->info($info->message);
