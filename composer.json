@@ -1,11 +1,11 @@
 {
   "name": "emedia/helpers",
-  "description": "Laravel 6 Helper functions and static classes",
+  "description": "Laravel 6 and 7 Helper functions and static classes",
   "type": "library",
   "require": {
     "php": "^7.2",
-    "illuminate/support": "^6.0",
-    "illuminate/console": "^6.0",
+    "illuminate/support": "^6.0|^7.0",
+    "illuminate/console": "^6.0|^7.0",
     "emedia/php-helpers": "~1.1"
   },
   "repositories": [
