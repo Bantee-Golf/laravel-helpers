@@ -1,8 +1,8 @@
 ## Laravel Helper functions
 
-Supports Laravel 6 and 7
-
 Use 2.0.x for Laravel 5.7 - 5.8
+
+This package was earlier named as `emedia/helpers`, this has been renamed to `emedia/laravel-helpers`.
 
 ### Installation Instructions
 
@@ -17,7 +17,7 @@ Add the repository to `composer.json`
 ```
 
 ```
-composer require emedia/helpers
+composer require emedia/laravel-helpers
 ```
 
 ### Available Commands

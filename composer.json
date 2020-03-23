@@ -1,6 +1,6 @@
 {
-  "name": "emedia/helpers",
-  "description": "Laravel 6 and 7 Helper functions and static classes",
+  "name": "emedia/laravel-helpers",
+  "description": "Laravel Helper functions and static classes",
   "type": "library",
   "require": {
     "php": "^7.2",
