@@ -23,7 +23,8 @@
       "src/global_functions/array_helpers.php"
     ],
     "psr-4": {
-      "EMedia\\Helpers\\": "src/"
+      "EMedia\\Helpers\\": "src/",
+      "EMedia\\TokenGenerator\\": "src/"
     }
   },
   "extra": {
