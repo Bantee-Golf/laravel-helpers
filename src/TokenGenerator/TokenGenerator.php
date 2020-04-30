@@ -8,11 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class TokenGenerator
 {
 
-	public function getCodeForModel(Model $model, $dbColumn, $maxChars = 8)
+	/**
+	 *
+	 * Create a unique token based on a DB column
+	 *
+	 * @param Model $model
+	 * @param $dbColumn
+	 * @param int $minChars
+	 * @param int $maxChars
+	 * @return string|null
+	 * @throws CodeMaxCharacterLimitExhaustedException
+	 */
+	public static function getCodeForModel(Model $model, $dbColumn, $minChars = 4, $maxChars = 8): ?string
 	{
-		// generate a code
-		$minChars = 4;
 		$code = null;
+
+		// safety checks
+		if ($minChars <= 0) $minChars = 1;
+		if ($maxChars <= $minChars) $maxChars = $minChars + 1;
 
 		// check for duplicates
 		$uniqueFound = false;
@@ -20,7 +33,7 @@ class TokenGenerator
 		for ($x = $minChars; $x < $maxChars; $x++) {
 			// loop 100k times
 			for ($i = 0, $iMax = 100000; $i < $iMax; $i++) {
-				$code = $this->generate($minChars, $maxChars);
+				$code = self::generate($x);
 				$entity = $model::where($dbColumn, $code)->first();
 				if (!$entity) {
 					$uniqueFound = true;
@@ -37,15 +50,25 @@ class TokenGenerator
 	}
 
 
-
-	public function generate($minChars = 4, $maxChars = 8)
+	/**
+	 *
+	 * Return a new token that doesn't have any ambiguous characters or offensive words
+	 *
+	 * @param int $characterLimit
+	 * @return string
+	 */
+	public static function generate($characterLimit = 4): string
 	{
+		// don't let limit be negative
+		if ($characterLimit <= 0) $characterLimit = 1;
+
 		$foundCode = false;
 		$code = null;
 
+		// repeat forever until a non-offensive code is found
 		do {
-			$code = self::getCode($minChars, $maxChars);
-			if (!$this->isOffensive($code)) {
+			$code = self::getCode($characterLimit);
+			if (!self::isOffensive($code)) {
 				$foundCode = true;
 			}
 		} while (!$foundCode);
@@ -53,12 +76,20 @@ class TokenGenerator
 		return $code;
 	}
 
-	protected function getCode($minChars = 4, $maxChars = 8) {
-		$chars = "2345679ACDEFGHJKMNPQRSTUVWXYZ";
+	/**
+	 *
+	 * Generate a new token that doesn't have any ambiguous characters
+	 *
+	 * @param int $limit
+	 * @return string
+	 */
+	protected static function getCode($limit = 4): string
+	{
+		$characterSet = "2345679ACDEFGHJKMNPQRSTUVWXYZ";
 		$result = "";
 
-		for ($i = $minChars; $i < $maxChars; $i++) {
-			$result .= $chars[mt_rand(0, strlen($chars)-1)];
+		for ($i = 0; $i < $limit; $i++) {
+			$result .= $characterSet[random_int(0, strlen($characterSet)-1)];
 		}
 
 		return $result;
@@ -72,10 +103,11 @@ class TokenGenerator
 	 *
 	 * @return bool
 	 */
-	public function isOffensive($word) {
+	public static function isOffensive($word): bool
+	{
 		$word = strtolower($word);
 
-		$offensiveRegEx = implode('|', $this->getOffensiveWords());
+		$offensiveRegEx = implode('|', self::getOffensiveWords());
 
 		if (preg_match("/({$offensiveRegEx})/i", $word)) {
 			return true;
@@ -84,7 +116,13 @@ class TokenGenerator
 		return false;
 	}
 
-	protected function getOffensiveWords() {
+	/**
+	 *
+	 * Get a list of known offensive word stems
+	 *
+	 * @return string[]
+	 */
+	protected static function getOffensiveWords() {
 		return [
 			'fuck', 'cunt', 'lick', 'sex', 'moth', 'ass', 'cum', 'suck',
 			'hole', 'dick', 'cock', 'puss', 'bitch', 'whor', 'fcu', 'hair',
