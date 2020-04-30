@@ -95,6 +95,23 @@ Then call the function
 self::newUniqueToken('confirmation_token')
 ```
 
+### Token Generator
+
+Generates unique token for a model. The tokens generated are in uppercase and case-sensitive.
+
+This will ensure the tokens generated are easy to read, non-offensive to read and unique in the database column.
+
+```
+// generate a token within your code
+$token = \EMedia\Helpers\TokenGenerator\TokenGenerator::generate();
+
+// pass a token character limit
+$token = \EMedia\Helpers\TokenGenerator\TokenGenerator::generate(10);
+
+// generate a token, and check if it already exists in the DB
+$token = \EMedia\Helpers\TokenGenerator\TokenGenerator::getCodeForModel(new ShoppingCart(), 'cart_token');
+```
+
 ### Components
 
 #### Menu
