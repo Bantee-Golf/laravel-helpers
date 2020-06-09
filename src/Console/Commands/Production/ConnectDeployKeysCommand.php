@@ -112,9 +112,15 @@ class ConnectDeployKeysCommand extends Command
 			$this->error("Could not receive an access token for given client key and client secret.");
 			print_r($response);
 		} else {
-			if (isset($response->access_token, $response->scopes) && strpos($response->scopes, 'repository:admin') > -1) {
-				$accessToken = $response->access_token;
+			if (isset($response->access_token, $response->scopes)) {
+				if (strpos($response->scopes, 'repository:admin') > -1) {
+					$accessToken = $response->access_token;
+				} else {
+					$this->error("Provided client key does not have admin privileges.");
+					print_r($response);
+				}
 			} else {
+				$this->error("Could not receive an access token or access scopes for given client key and client secret.");
 				print_r($response);
 			}
 		}
