@@ -132,6 +132,11 @@ class ConnectDeployKeysCommand extends Command
 
     protected function addKey($repository, $label, $key, $accessToken)
     {
+        if (strpos($repository, 'git@bitbucket.org:elegantmedia') === false) {
+            $this->error("Skipping unsupported repository: " . $repository);
+            return;
+        }
+
         $sections = explode(':', $repository);
         if (is_countable($sections) && count($sections) === 2) {
             $slug = substr($sections[1], 0, strrpos($sections[1], '.'));
